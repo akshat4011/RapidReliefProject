@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 target/
 *.jar
 *.class
@@ -6,3 +7,6 @@ target/
 *.mv.db
 node_modules/
 .env
+=======
+
+>>>>>>> c0f7d14 (Initial commit)

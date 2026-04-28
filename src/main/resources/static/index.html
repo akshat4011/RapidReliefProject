@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapid Response Medical Crisis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main id="authPage" class="auth-shell">
+        <section class="hero">
+            <nav class="topbar">
+                <div class="rr-brand hero-rr-brand"><span>RR</span><strong>Rapid<br>Response</strong></div>
+                <div class="nav-links">
+                    <a href="#loginCard">Home</a>
+                    <a href="#about">About Us</a>
+                    <a href="#dashboardPage">Live Map</a>
+                    <a id="topLoginLink" class="nav-login-link" href="#loginCard">Login</a>
+                    <button id="emergencyHelpBtn" class="donate-btn" type="button">Emergency Help</button>
+                </div>
+            </nav>
+            <div class="hero-content">
+                <h1>Medical Crisis Relief</h1>
+                <p>Register, log in, report emergencies, track hospitals, and get quick first-aid guidance.</p>
+                <a class="outline-cta" href="#loginCard">Start Now</a>
+                <div id="emergencyInfo" class="emergency-info hidden">Medical emergency number: <strong>108</strong></div>
+            </div>
+        </section>
+
+        <section class="auth-grid" id="loginCard">
+            <div class="auth-hero">
+                <div class="hero-content-section">
+                    <h1>Rapid Response</h1>
+                    <p>Report emergencies, track help in real time, and connect with medical responders quickly.</p>
+                </div>
+            </div>
+            <div class="auth-form-section">
+                <div class="form-container">
+                    <div class="auth-forms">
+                        <form id="loginForm" class="auth-form active-form">
+                            <div class="form-header">
+                                <span class="form-kicker">Member Access</span>
+                                <h2>Welcome Back</h2>
+                                <p class="form-subtext">Sign in to continue to your medical response dashboard.</p>
+                            </div>
+                            <label>Email
+                                <input name="email" type="email" required placeholder="Enter your email address">
+                            </label>
+                            <label>Password
+                                <input name="password" type="password" required placeholder="Enter your password">
+                            </label>
+                            <div class="form-options auth-links-row">
+                                <button id="forgotPasswordBtn" type="button" class="text-button link-btn">Forgot password?</button>
+                                <button type="button" class="text-button link-btn" id="switchToRegisterBtn">Create user</button>
+                            </div>
+                            <label class="checkbox remember-check"><input type="checkbox" name="remember"> Keep me signed in on this device</label>
+                            <button type="submit" class="submit-btn">Sign In</button>
+                            <p id="loginMsg" class="message"></p>
+                        </form>
+                        <form id="registerForm" class="auth-form hidden">
+                            <div class="form-header">
+                                <span class="form-kicker">New User</span>
+                                <h2>Create Account</h2>
+                                <p class="form-subtext">Add your emergency details once, then sign in anytime.</p>
+                            </div>
+                            <label>Full name<input name="fullName" required placeholder="Aarav Sharma"></label>
+                            <label>Email<input name="email" type="email" required placeholder="you@example.com"></label>
+                            <label>Phone<input name="phone" required placeholder="+91 98765 43210"></label>
+                            <div class="two-cols">
+                                <label>Blood group<input name="bloodGroup" required placeholder="O+"></label>
+                                <label>Emergency contact<input name="emergencyContact" required placeholder="+91 90000 00000"></label>
+                            </div>
+                            <label>Password<input name="password" type="password" required minlength="6" placeholder="Minimum 6 characters"></label>
+                            <button type="submit" class="submit-btn">Create Account</button>
+                            <p id="registerMsg" class="message"></p>
+                            <div class="auth-footer compact-footer">
+                                <p>Already have an account? <button type="button" class="text-button link-btn" id="backToLoginBtn">Login</button></p>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="social-divider">or</div>
+                    <div class="social-login">
+                        <button type="button" class="social-btn google" title="Google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path></svg></button>
+                        <button type="button" class="social-btn facebook" title="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"></path></svg></button>
+                        <button type="button" class="social-btn twitter" title="Twitter"><svg viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 002.856-3.258 10.02 10.02 0 01-2.825.836 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417a9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" fill="#000"></path></svg></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-band" id="about">
+            <h2>Built for medical and health crises</h2>
+            <p>Store responder-ready patient data, locate nearby care, record crisis reports, and guide users while help is on the way.</p>
+        </section>
+    </main>
+
+    <main id="dashboardPage" class="dashboard hidden">
+        <aside class="crisis-sidebar">
+            <div class="rr-brand">
+                <span>RR</span>
+                <strong>Rapid<br>Response</strong>
+            </div>
+
+            <nav class="side-nav">
+                <p>Main</p>
+                <a class="active" href="#dashboardPage">Dashboard</a>
+                <a href="#mapCard">Live Map</a>
+                <button id="voiceBtn" type="button">Voice Input</button>
+                <button id="sosAlertBtn" type="button">SOS Alert</button>
+                <p>Crisis</p>
+                <a href="#alertsCard">Active Alerts</a>
+                <a href="#crisisForm">Report Crisis</a>
+                <p>Medical</p>
+                <a href="#mapCard">Hospitals</a>
+                <a href="#mapCard">Blood Banks</a>
+                <a href="#mapCard">Pharmacies</a>
+                <p>AI</p>
+                <a href="#aiCard">AI Assistant <small>Live</small></a>
+            </nav>
+
+            <div class="profile-box">
+                <div class="avatar" id="userInitial">R</div>
+                <div>
+                    <h2 id="userName">Responder</h2>
+                    <p id="userMeta">Member</p>
+                </div>
+            </div>
+            <button id="logoutBtn" class="logout-action" type="button">Logout</button>
+        </aside>
+
+        <section class="crisis-workspace">
+            <header class="crisis-topbar">
+                <div class="title-row">
+                    <h1>Medical Crisis Dashboard</h1>
+                </div>
+                <div class="top-actions">
+                    <button id="themeToggleBtn" type="button">Dark mode</button>
+                    <a href="#aiCard">AI Chat</a>
+                    <button id="locateBtn" type="button">SOS Location</button>
+                    <a class="report-link" href="#crisisForm">Report</a>
+                </div>
+            </header>
+
+            <section id="alertsCard" class="alerts-card">
+                <div class="card-title">
+                    <h2>Live Crisis Alerts</h2>
+                    <button id="refreshReportsBtn" type="button">Refresh</button>
+                </div>
+                <ul id="reportList" class="report-list"></ul>
+            </section>
+
+            <section class="dashboard-grid">
+                <form id="crisisForm" class="crisis-panel report-panel">
+                    <h2 id="crisisFormHeading">Report Medical Crisis</h2>
+                    <div class="form-grid">
+                        <label>Title
+                            <input name="title" id="title" placeholder="Brief emergency title">
+                        </label>
+                        <label>Type
+                            <select name="crisisType">
+                                <option>Road accident</option>
+                                <option>Medical Emergency</option>
+                                <option>Heart attack or breathing issue</option>
+                                <option>Severe bleeding</option>
+                                <option>Burns</option>
+                                <option>Stroke symptoms</option>
+                                <option>Unconscious person</option>
+                            </select>
+                        </label>
+                        <label>Severity
+                            <select name="severity" id="severity">
+                                <option>Medium</option>
+                                <option>High</option>
+                                <option>Critical</option>
+                                <option>Low</option>
+                            </select>
+                        </label>
+                        <label>Location
+                            <input id="locationValue" value="28.7041, 77.1025">
+                        </label>
+                        <label>Contact
+                            <input name="contact" id="contact" placeholder="Phone">
+                        </label>
+                        <label>Affected
+                            <input name="affected" id="affected" placeholder="Count">
+                        </label>
+                    </div>
+                    <label>Description
+                        <textarea name="description" id="description" rows="4" placeholder="Describe the emergency..."></textarea>
+                    </label>
+                    <div class="destination-row">
+                        <label>Hospital lat
+                            <input name="destinationLat" id="destinationLat" value="28.6139">
+                        </label>
+                        <label>Hospital lng
+                            <input name="destinationLng" id="destinationLng" value="77.2090">
+                        </label>
+                    </div>
+                    <div class="report-submit-row">
+                        <button id="reportSubmitBtn" class="report-action" type="submit">Report Emergency Now</button>
+                        <button id="cancelEditBtn" class="timeline-action hidden" type="button">Cancel Edit</button>
+                    </div>
+                    <p id="crisisMsg" class="message"></p>
+                </form>
+
+                <section id="aiCard" class="crisis-panel ai-panel">
+                    <div class="ai-heading">
+                        <div class="bot-avatar">AI</div>
+                        <div>
+                            <h2>Medical AI Assistant</h2>
+                            <p>Emergency guidance specialist</p>
+                        </div>
+                        <span>Online</span>
+                    </div>
+                    <div id="chatLog" class="chat-log ai-chat-log">
+                        <div class="chat-bubble bot">
+                            Hi, I am your Medical Crisis AI. I can help with first-aid steps, hospital guidance, symptom triage, basic medication safety, and crisis reporting.
+                        </div>
+                    </div>
+                    <div class="quick-chips">
+                        <button type="button" data-prompt="Emergency steps">Emergency steps</button>
+                        <button type="button" data-prompt="How to do CPR?">CPR</button>
+                        <button type="button" data-prompt="Heart attack symptoms">Heart attack</button>
+                        <button type="button" data-prompt="Burn first aid">Burns</button>
+                        <button type="button" data-prompt="Unconscious person">Unconscious</button>
+                        <button type="button" data-prompt="Stroke symptoms">Stroke</button>
+                    </div>
+                    <form id="chatForm" class="chat-form ai-chat-form">
+                        <input name="message" placeholder="Describe your emergency..." required>
+                        <button type="submit">Send</button>
+                    </form>
+                </section>
+            </section>
+
+            <section id="mapCard" class="crisis-panel map-card">
+                <div class="card-title">
+                    <h2>Live Map Tracking</h2>
+                    <div class="distance-meter"><span id="distanceValue">0 km</span><small>distance left</small></div>
+                </div>
+                <div class="map-tools">
+                    <button id="findHospitalsBtn" type="button">Find Hospitals 10 km</button>
+                    <button id="findBloodBtn" type="button">Find Blood Help 10 km</button>
+                    <button id="findPharmacyBtn" type="button">Find Pharmacies 10 km</button>
+                    <span id="placesStatus">Use SOS Location first for best results.</span>
+                </div>
+                <div id="map"></div>            </section>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

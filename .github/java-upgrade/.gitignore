@@ -1,0 +1,9 @@
+
+target/
+*.jar
+*.class
+*.log
+*.db
+*.mv.db
+node_modules/
+.env
