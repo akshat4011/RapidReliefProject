@@ -22,6 +22,9 @@ const crisisFormHeading = document.getElementById("crisisFormHeading");
 const reportSubmitBtn = document.getElementById("reportSubmitBtn");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 const chatForm = document.getElementById("chatForm");
+const chatLanguage = document.getElementById("chatLanguage");
+const doctorStatus = document.getElementById("doctorStatus");
+const aiCard = document.getElementById("aiCard");
 const refreshReportsBtn = document.getElementById("refreshReportsBtn");
 const themeToggleBtn = document.getElementById("themeToggleBtn");
 const findHospitalsBtn = document.getElementById("findHospitalsBtn");
@@ -481,7 +484,8 @@ function startVoiceInput() {
         return;
     }
     const recognition = new SpeechRecognition();
-    recognition.lang = "en-IN";
+    const language = chatLanguage ? chatLanguage.value : "english";
+    recognition.lang = language === "hindi" ? "hi-IN" : language === "french" ? "fr-FR" : "en-IN";
     recognition.interimResults = false;
     recognition.onresult = (event) => {
         document.getElementById("description").value = event.results[0][0].transcript;
@@ -651,6 +655,131 @@ function parseReportDescription(text) {
     parsed.description = descriptionLines.join("\n").trim();
     return parsed;
 }
+
+async function suggestNearbyDoctors(problemText) {
+    if (!doctorStatus) return;
+    doctorStatus.textContent = "Checking your location and nearby available doctors...";
+
+    try {
+        const location = await ensureCurrentLocation();
+        const problemTag = inferDoctorNeed(problemText);
+        const doctors = await fetchNearbyDoctors(location, problemTag);
+
+        if (!doctors.length) {
+            doctorStatus.textContent = "Nearby doctor list is not available right now. Try SOS Location or a nearby city area.";
+            addChat("I could not find a listed nearby doctor right now, but you can still use the map buttons for hospitals and blood help.", "bot");
+            return;
+        }
+
+        doctorStatus.textContent = `Found ${doctors.length} nearby doctors for ${problemTag}.`;
+        addDoctorListToChat(doctors, problemTag);
+    } catch (error) {
+        doctorStatus.textContent = error.message;
+        addChat("I could not detect your location for doctor search. Please allow location access and try again.", "bot");
+    }
+}
+
+function inferDoctorNeed(problemText) {
+    const text = problemText.toLowerCase();
+    if (text.includes("heart") || text.includes("chest") || text.includes("breath")) return "heart and breathing support";
+    if (text.includes("burn") || text.includes("jala")) return "burn care";
+    if (text.includes("accident") || text.includes("bleed") || text.includes("injury")) return "trauma support";
+    if (text.includes("fever") || text.includes("infection")) return "general physician support";
+    return "emergency medical support";
+}
+
+function ensureCurrentLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                state.source = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                updateMap();
+                resolve(state.source);
+            }, () => {
+                if (state.source) resolve(state.source);
+                else reject(new Error("Location permission denied."));
+            }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+        } else if (state.source) {
+            resolve(state.source);
+        } else {
+            reject(new Error("Geolocation is not supported in this browser."));
+        }
+    });
+}
+
+async function fetchNearbyDoctors(location, problemTag) {
+    const radiusMeters = 10000;
+    const query = doctorQuery(radiusMeters, location);
+    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error("Doctor search service is busy right now.");
+    }
+    const data = await response.json();
+    return data.elements
+        .map(toDoctorPlace)
+        .filter(Boolean)
+        .map((doctor) => ({
+            ...doctor,
+            problemTag,
+            distanceKm: haversineKm(location, { lat: doctor.lat, lng: doctor.lng })
+        }))
+        .sort((a, b) => a.distanceKm - b.distanceKm)
+        .slice(0, 5);
+}
+
+function doctorQuery(radiusMeters, location) {
+    return `
+        [out:json][timeout:25];
+        (
+          node["amenity"="doctors"](around:${radiusMeters},${location.lat},${location.lng});
+          way["amenity"="doctors"](around:${radiusMeters},${location.lat},${location.lng});
+          relation["amenity"="doctors"](around:${radiusMeters},${location.lat},${location.lng});
+          node["healthcare"="doctor"](around:${radiusMeters},${location.lat},${location.lng});
+          way["healthcare"="doctor"](around:${radiusMeters},${location.lat},${location.lng});
+          relation["healthcare"="doctor"](around:${radiusMeters},${location.lat},${location.lng});
+          node["healthcare"="clinic"](around:${radiusMeters},${location.lat},${location.lng});
+          way["healthcare"="clinic"](around:${radiusMeters},${location.lat},${location.lng});
+          relation["healthcare"="clinic"](around:${radiusMeters},${location.lat},${location.lng});
+        );
+        out center tags;
+    `;
+}
+
+function toDoctorPlace(element) {
+    const lat = element.lat ?? element.center?.lat;
+    const lng = element.lon ?? element.center?.lon;
+    if (!lat || !lng) return null;
+    const tags = element.tags || {};
+    return {
+        lat,
+        lng,
+        name: tags.name || tags["name:en"] || "Nearby doctor",
+        phone: tags.phone || tags["contact:phone"] || "Phone not listed",
+        address: [tags["addr:street"], tags["addr:city"]].filter(Boolean).join(", ") || "Address not listed",
+        specialty: tags.healthcare_speciality || tags["healthcare:speciality"] || "General care"
+    };
+}
+
+function addDoctorListToChat(doctors, problemTag) {
+    const log = document.getElementById("chatLog");
+    const wrap = document.createElement("div");
+    wrap.className = "chat-bubble bot doctor-results-bubble";
+    const cards = doctors.map((doctor) => `
+        <div class="doctor-card">
+            <strong>${doctor.name}</strong>
+            <span>Best for: ${problemTag}</span>
+            <span>Phone: ${doctor.phone}</span>
+            <span>Distance: ${doctor.distanceKm.toFixed(1)} km</span>
+            <span>${doctor.address}</span>
+        </div>`).join("");
+    wrap.innerHTML = `I found these nearby doctors for you:<div class="doctor-list">${cards}</div>`;
+    log.appendChild(wrap);
+    log.scrollTop = log.scrollHeight;
+}
 function formatTime(date) {
     return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
@@ -663,9 +792,13 @@ async function sendChatMessage(message) {
     try {
         const data = await api("/api/chat", {
             method: "POST",
-            body: JSON.stringify({ message: trimmed })
+            body: JSON.stringify({
+                message: trimmed,
+                language: chatLanguage ? chatLanguage.value : "english"
+            })
         });
         addChat(data.reply, "bot");
+        await suggestNearbyDoctors(trimmed);
     } catch (error) {
         addChat(`${error.message}\n\nFor now: call emergency services, move to a safe place if possible, and share your location with a trusted person.`, "bot");
     }
@@ -711,6 +844,13 @@ if (state.user) {
 } else {
     showLoginForm();
 }
+
+
+
+
+
+
+
 
 
 

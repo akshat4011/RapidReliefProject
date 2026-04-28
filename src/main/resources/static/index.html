@@ -209,26 +209,34 @@
 
                 <section id="aiCard" class="crisis-panel ai-panel">
                     <div class="ai-heading">
-                        <div class="bot-avatar">AI</div>
+                        <div class="bot-avatar doremi-avatar" aria-hidden="true"><span class="doremi-bow"></span><span class="doremi-face"><i></i><i></i></span></div>
                         <div>
-                            <h2>Medical AI Assistant</h2>
-                            <p>Emergency guidance specialist</p>
+                            <h2>Doremi Medical Assistant</h2>
+                            <p>Multilingual emergency guidance specialist</p>
                         </div>
-                        <span>Online</span>
+                        <div class="ai-tools">
+                            <select id="chatLanguage" aria-label="Choose language">
+                                <option value="english">English</option>
+                                <option value="hindi">Hindi</option>
+                                <option value="french">French</option>
+                            </select>
+</div>
                     </div>
                     <div id="chatLog" class="chat-log ai-chat-log">
-                        <div class="chat-bubble bot">
-                            Hi, I am your Medical Crisis AI. I can help with first-aid steps, hospital guidance, symptom triage, basic medication safety, and crisis reporting.
+                        <div class="chat-bubble bot doremi-intro">
+                            <strong>Hi. i am doremi.</strong>
+                            I can guide first-aid steps, nearby doctors, hospitals, and emergency next actions in your language.
                         </div>
                     </div>
                     <div class="quick-chips">
                         <button type="button" data-prompt="Emergency steps">Emergency steps</button>
+                        <button type="button" data-prompt="Road accident ho gaya">Road accident</button>
                         <button type="button" data-prompt="How to do CPR?">CPR</button>
                         <button type="button" data-prompt="Heart attack symptoms">Heart attack</button>
+                        <button type="button" data-prompt="Find nearby doctors for fever">Find doctors</button>
                         <button type="button" data-prompt="Burn first aid">Burns</button>
-                        <button type="button" data-prompt="Unconscious person">Unconscious</button>
-                        <button type="button" data-prompt="Stroke symptoms">Stroke</button>
                     </div>
+                    <div id="doctorStatus" class="doctor-status">Tell me the problem and I will try to detect your location and list nearby doctors with phone numbers.</div>
                     <form id="chatForm" class="chat-form ai-chat-form">
                         <input name="message" placeholder="Describe your emergency..." required>
                         <button type="submit">Send</button>
@@ -249,12 +257,15 @@
                 </div>
                 <div id="map"></div>            </section>
         </section>
-    </main>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    </main><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
+
+
+
+
+
 
 
 
