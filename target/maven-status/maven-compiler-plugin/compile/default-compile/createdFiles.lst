@@ -1,8 +1,0 @@
-com\rapidresponse\user\AuthController.class
-com\rapidresponse\user\AppUser.class
-com\rapidresponse\user\AuthResponse.class
-com\rapidresponse\RapidResponseApplication.class
-com\rapidresponse\user\UserRepository.class
-com\rapidresponse\user\RegisterRequest.class
-com\rapidresponse\user\UserResponse.class
-com\rapidresponse\user\LoginRequest.class

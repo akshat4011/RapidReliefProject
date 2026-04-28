@@ -1,0 +1,10 @@
+.git
+.github
+.vscode
+target
+data
+node_modules
+*.log
+*.db
+*.mv.db
+desktop.ini
