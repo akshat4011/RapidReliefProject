@@ -19,6 +19,11 @@ body {
     background: var(--paper);
 }
 
+.auth-page {
+    min-height: 100vh;
+    background: white;
+}
+
 button, input, textarea, select {
     font: inherit;
 }
@@ -157,6 +162,15 @@ button:hover {
 .hero-content-section {
     text-align: center;
     max-width: 400px;
+}
+
+.auth-home-btn {
+    margin-bottom: 26px;
+    padding: 10px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
 }
 
 .hero-content-section h1 {
@@ -356,7 +370,7 @@ button:hover {
     display: flex;
     gap: 12px;
     justify-content: center;
-    margin-bottom: 24px;
+    margin-top: 20px;
 }
 
 .social-btn {

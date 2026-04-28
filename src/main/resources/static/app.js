@@ -11,12 +11,16 @@ const state = {
     currentReports: []
 };
 
+const landingPage = document.getElementById("landingPage");
 const authPage = document.getElementById("authPage");
 const dashboardPage = document.getElementById("dashboardPage");
 const registerForm = document.getElementById("registerForm");
 const loginForm = document.getElementById("loginForm");
 const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+const topHomeLink = document.getElementById("topHomeLink");
 const topLoginLink = document.getElementById("topLoginLink");
+const startNowLink = document.getElementById("startNowLink");
+const authHomeBtn = document.getElementById("authHomeBtn");
 const crisisForm = document.getElementById("crisisForm");
 const crisisFormHeading = document.getElementById("crisisFormHeading");
 const reportSubmitBtn = document.getElementById("reportSubmitBtn");
@@ -108,8 +112,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
     sessionStorage.removeItem("rapidUser");
     state.user = null;
     stopSosAlert();
-    authPage.classList.remove("hidden");
-    dashboardPage.classList.add("hidden");
+    showLoginPage();
 });
 
 locateBtn.addEventListener("click", useCurrentLocation);
@@ -124,7 +127,19 @@ if (sosAlertBtn) sosAlertBtn.addEventListener("click", toggleSosAlert);
 if (switchToRegisterBtn) switchToRegisterBtn.addEventListener("click", showRegisterForm);
 if (backToLoginBtn) backToLoginBtn.addEventListener("click", showLoginForm);
 if (forgotPasswordBtn) forgotPasswordBtn.addEventListener("click", handleForgotPassword);
-if (topLoginLink) topLoginLink.addEventListener("click", showLoginForm);
+if (topHomeLink) topHomeLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    showLandingPage();
+});
+if (topLoginLink) topLoginLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    showLoginPage();
+});
+if (startNowLink) startNowLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    showLoginPage();
+});
+if (authHomeBtn) authHomeBtn.addEventListener("click", showLandingPage);
 if (cancelEditBtn) cancelEditBtn.addEventListener("click", resetCrisisForm);
 
 crisisForm.addEventListener("submit", async (event) => {
@@ -235,7 +250,26 @@ function toggleTheme() {
     setTheme(dashboardPage.classList.contains("dark-dashboard") ? "light" : "dark");
 }
 
+function showLandingPage() {
+    landingPage.classList.remove("hidden");
+    authPage.classList.add("hidden");
+    dashboardPage.classList.add("hidden");
+}
+
+function showAuthPage() {
+    landingPage.classList.add("hidden");
+    authPage.classList.remove("hidden");
+    dashboardPage.classList.add("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showLoginPage() {
+    showLoginForm();
+    showAuthPage();
+}
+
 function showRegisterForm() {
+    showAuthPage();
     registerForm.classList.remove("hidden");
     loginForm.classList.add("hidden");
     registerForm.classList.add("active-form");
@@ -245,6 +279,7 @@ function showRegisterForm() {
 }
 
 function showLoginForm() {
+    showAuthPage();
     registerForm.classList.add("hidden");
     loginForm.classList.remove("hidden");
     registerForm.classList.remove("active-form");
@@ -263,6 +298,7 @@ function handleForgotPassword() {
 }
 
 function showDashboard() {
+    landingPage.classList.add("hidden");
     authPage.classList.add("hidden");
     dashboardPage.classList.remove("hidden");
     document.getElementById("userName").textContent = state.user.fullName;
@@ -842,7 +878,7 @@ function toRad(value) {
 if (state.user) {
     showDashboard();
 } else {
-    showLoginForm();
+    showLandingPage();
 }
 
 
