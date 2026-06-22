@@ -1,15 +1,28 @@
 # Rapid Response Medical Crisis Project
+📌 About
 
-Full-stack hackathon starter with:
+Rapid Response is a web-based medical emergency response platform designed to connect people in need with immediate assistance during health crises. The platform allows users to register and log in securely, report medical emergencies, share their live location, view nearby hospitals on an interactive map, and use voice commands for faster emergency reporting. Its goal is to reduce response time and improve coordination during critical situations.
 
-- Register and login flow
-- User data saved locally in an H2 database
-- Protected dashboard after login
-- Live tracking map using Leaflet and OpenStreetMap
-- Distance left from patient/source to hospital/destination
-- Voice input for crisis details in Chrome/Edge
-- Java backend APIs for auth, reports, and a simple medical AI-style chatbot
+🚀 Features
 
+   🔐 Secure User Registration & Login
+   
+   🏥 Medical Emergency Reporting
+   
+   📍 Live Location Tracking 
+   
+   🎤 Voice-Based Emergency Reporting
+   
+   🚑 Nearby Hospitals & Emergency Services
+   
+   👤 User Dashboard
+   
+   💾 Database Storage (MySQL)
+   
+   ☕ Java Spring Boot Backend
+   
+   🌐 Responsive Frontend
+   
 ## Run
 
 Install Java 17 and Maven, then run:
